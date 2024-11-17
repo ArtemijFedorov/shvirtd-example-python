@@ -1,22 +1,19 @@
-version: "3"
-services:
-  proxy:
-    image: nginx:latest
-    ports:
-      - "5000:80"
-    networks:
-      backend:
-        ipv4_address: 172.20.0.2
+version: "3.7"
+include:
+  - proxy.yaml
 
+services:
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.python
-    networks:
-      backend:
-        ipv4_address: 172.20.0.5
-    restart: always
-    environment:
+   image: python_cont
+   depends_on:
+   - db
+   ports:
+   - 5000:5000
+   networks:
+    backend:
+      ipv4_address: 172.20.0.5
+   restart: on-failure
+   environment:
       MYSQL_HOST: db
       MYSQL_DATABASE: \${MYSQL_DATABASE}
       MYSQL_USER: \${MYSQL_USER}
